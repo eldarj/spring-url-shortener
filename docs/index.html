@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Url shortener - Help</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+<!-- NAV -->
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+    <div class="container">
+
+        <a class="navbar-brand" href="https://eldarj.github.io/spring-url-shortener/">Url shortener</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#general">General info</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#api-endpoints">API Endpoints</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#implementation">Implementation</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#tests">Tests</a>
+                </li>
+            </ul>
+            <div class="mt-2 mt-md-0">
+                <a href="https://github.com/eldarj/spring-url-shortener" target="_blank"
+                   class="btn btn-sm btn-light" style="font-size: 11px;">@github/url-shortener</a>
+            </div>
+        </div>
+    </div>
+</nav>
+<!-- BODY -->
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-sm">
+            <h1 class="mt-5">URL shortener</h1>
+            <p class="lead">Help page</p>
+            <hr>
+            <!-- GENERAL INFO -->
+            <div class="row">
+                <div class="col-sm-8">
+                    <h4 id="general"># General info</h4>
+                    <p>A  HTTP service that serves to shorten URLs, with the following functionalities:</p>
+                    <ul>
+                        <li>Registration Web address</li>
+                        <li>Redirect client in accordance with the shortened URL</li>
+                        <li>Usage statistics</li>
+                    </ul>
+                    <p>
+                        The app is implemented using Spring Boot, JPA and a H2 (in-memory) db.<br>
+                        It consists of three sections: account management, url management and a redirection handler for registered Urls.
+                    </p>
+                    <p>
+                         - The source code can be found on
+                        <a href="https://github.com/eldarj/spring-url-shortener" target="_blank">github/eldarj</a><br>
+                         - The jar executable can be found in the root of the project, or within the target dir.<br>
+                         - All dependencies and config. are included/is done within the project itself, and doesn't require any external configuration.
+                    </p>
+                </div>
+                <div class="col-sm-4">
+                    <p class="lead">Details</p>
+                    <ul style="list-style: none;" class="small pl-0">
+                        <li>Framework - Spring Boot 2.0.5.</li>
+                        <li>Dbm - Spring Data JPA & H2 embedded db</li>
+                        <li>Packaged as - Jar</li>
+                        <li>Runs on Tomcat embedded (:8080)</li>
+                        <li>Developed with Maven 3.6 and Java 8</li>
+                        <li>--</li>
+                        <li>Build and run from target dir or with</li>
+                        <li><code>java -jar test-1.0.jar</code> from the root of proj.</li>
+                    </ul>
+                </div>
+            </div>
+            <hr>
+            <!-- API-ENDPOINTS -->
+            <h4 id="api-endpoints"># API endpoints</h4>
+            <div class="text">
+                <p>The API contains 3 controllers, which handle requests for:</p>
+                <ol>
+                    <li>Registering new URLs</li>
+                    <li>Retrieving redirection stats for each Url</li>
+                    <li>Access to generated short-urls (redirection)</li>
+                </ol>
+                <ul>
+                    <li>
+                        <strong>AccountController</strong><br>
+                        Handles registering client accounts.
+                        Endpoints are:
+                        <ul>
+                            <!-- /ACCOUNT ENDPOINT -->
+                            <li class="mb-4">
+                                <code class="font-weight-bold">/account</code><br>
+                                <small><strong>Method</strong> Post</small><br>
+                                <small>
+                                    <strong>Reqeust body</strong> - Account (accountId) for registering eg. <br>
+                                    <code>
+                                        { "accountId":"newAccountId" }
+                                    </code>
+                                </small><br>
+                                <small>
+                                    <strong>Response body</strong> - Registration status, desc., password eg.<br>
+                                    <code>
+                                        {
+                                        "success": true,
+                                        "description": "Your account is opened",
+                                        "password": "Z6HkKsu2",
+                                        "token": "cG94Olo2SGtLc3Uy"
+                                        }
+                                    </code><br>
+                                    <small> -- *token was added for testing purposes, otherwise use username:password for generating a base64 token</small>
+                                </small>
+                            </li>
+                            <!-- /ACCOUNTS ENDPOINT FOR TESTING PURPOSES -->
+                            <li class="mb-4">
+                                <code class="font-weight-bold">/accounts</code><small>  -- *Added for testing purposes.</small><br>
+                                <small><strong>Method</strong> Get</small><br>
+                                <small>
+                                    <strong>Response body</strong> - Serialized list of registered accounts and urls for each account.<br>
+                                    <code>
+                                        [
+                                        { "accountId": "eldarj", "password": "KygwI0SS", "token": "ZWxkYXJqOkt5Z3dJMFNT", "addedUrls": [ <br>
+                                        <span class="ml-5">
+                                            {"id": 1, "urlString": "https://www.java.com", "shortUrlString": "9Xz1lB1X", "redirectType": 302 },
+                                        </span><br>
+                                        <span class="ml-5">
+                                            {"id": 2, "urlString": "https://www.microsoft.com", "shortUrlString": "9fm4lBPO", "redirectType": 302 }
+                                        </span>
+                                        ]<br>
+                                        }
+                                        ]
+                                    </code>
+                                </small>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>UrlController</strong><br>
+                        Handles registering Urls for shortening, and statistics retrieval.
+                        Endpoints are:
+                        <ul>
+                            <!-- /REGISTER ENDPOINT -->
+                            <li class="mb-4">
+                                <code class="font-weight-bold">/register</code><br>
+                                <small><strong>Method</strong> Post</small><br>
+                                <small><strong>Request header</strong> Authorization header (Basic auth)</small><br>
+                                <small>
+                                    <strong>Reqeust body</strong> - Url for shortening eg. <br>
+                                    <code>
+                                        { "url":"https://google.com", "redirectType": 301 }
+                                    </code>
+                                </small><br>
+                                <small>
+                                    <strong>Response body</strong> Short url (if successful) eg. <br>
+                                    <code>{ "shortUrl": "http://short.com/xYswlE", "redirectType": 302 }</code>
+                                </small>
+                            </li>
+                            <!-- /STATISTIC ENDPOINT -->
+                            <li class="mb-4">
+                                <code class="font-weight-bold">/statistic/{accountId}</code><br>
+                                <small><strong>Method</strong> Get</small><br>
+                                <small><strong>Path var</strong> accountId to filter urls by</small><br>
+                                <small><strong>Request header</strong> Authorization header (Basic auth)</small><br>
+                                <small>
+                                    <strong>Response body</strong> - List of registered urls and count of redirects eg. <br>
+                                    <code>
+                                        {
+                                        "https://www.infobip.com": 2,
+                                        "https://www.microsoft.com": 1,
+                                        "https://www.java.com": 3
+                                        }
+                                    </code>
+                                </small>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>RedirectionController</strong><br>
+                        Handles url redirects.
+                        Endpoints are:
+                        <ul>
+                            <!-- /REDIRECT ENDPOINT -->
+                            <li class="mb-4">
+                                <code class="font-weight-bold">/{shortUrl}</code><br>
+                                <small><strong>Method</strong> Get</small><br>
+                                <small><strong>Path var</strong> shortUrl that was generated for a registered url</small><br>
+                                <small>
+                                    <strong>Response header</strong> - Redirection type (301, 302) and Location field containing the full-url.
+                                </small>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <!-- API-ENDPOINTS NOTES -->
+            <div class="alert alert-primary small">
+                <strong>Notes</strong> <br>
+                - all endpoints respond and request <code>application/json</code><br>
+                - all unappropiate requests will be handled and appropriate responses with error messages will be returned
+            </div>
+            <hr>
+            <!-- Implementation (Services, repositories, models) -->
+            <h4 id="implementation" class="mb-4"># Implementation</h4>
+            <div class="text row">
+                <div class="col-sm">
+                    <h5>Services and repositories</h5>
+                    <p>
+                        Besides the controllers, which handle requests, the app contiains a service and a repository layer for the same described
+                        "sections". There are two JPA repositories implemented, <code>AccountRepository</code> and <code>UrlRepository</code>
+                        which persist and manage data.<br><br>
+                        The service layer consists of three services, <code>AccountService</code>, <code>UrlService</code> and
+                        <code>AuthService</code> handle the app logic and work with the repositories. Repositories are injected into the services,
+                        while the services are injected into the controllers.
+                    </p>
+                </div>
+                <div class="col-sm">
+                    <h5>Models</h5>
+                    <p>
+                        The two mentioned layers along with the controllers, work with <i>db entities</i> and <i>models for parsing</i>
+                        (request and response models).
+                        <div>
+
+                        </div>
+                        Besides the models, a seeder bean <code>LoadDatabase</code> was implemented within the <code>loaders</code>
+                        package, that will generate some initial data for testing purposes.
+                    </p>
+                </div>
+            </div>
+            <hr>
+            <!-- TESTS -->
+            <h4 id="tests" class="mb-4"># Tests</h4>
+            <div class="text">
+                The test package contains controllers unit tests and integration tests for the services and repositories.
+                These tests are implemented with Spring Boot's <code>DataJpaTest</code>, <code>TestEntityManager</code>,
+                <code>Junit</code>, <code>Mockito</code> and <code>Powermock</code>.
+                <div class="row mt-4">
+                    <div class="col-sm">
+                        <h5>Unit tests</h5>
+                        <p>The implemented unit tests for <code>AccountControllerTest</code>, <code>UrlControllerTest</code>, and the
+                            <code>UrlControllerTest</code> will test the actions within these controllers, and how requests/responses
+                            are handled, while mocking the services and repositories.
+                        </p>
+                    </div>
+                    <div class="col-sm">
+                        <h5>Service and repos (integration) tests</h5>
+                        <p>
+                            The integration tests, <code>AccountIntegrationTest</code>, <code>AuthIntegrationTest</code>, and
+                            <code>UrlIntegrationTest</code> test the service and repository layer, without mocking and also handle dummy data
+                            using the <code>TestEntityManager</code>.
+                        </p>
+                    </div>
+                </div>
+                <p>
+                        There isn't a specific executable for running these tests, except by doing that within an IDE or run all with Maven's
+                    <code>mvn test</code>.
+                </p>
+            </div>
+            <div class="mb-5 mt-5">
+                <hr>
+                <small class="float-right" style="color: #bbb">Eldar Jahijagić - 2019</small>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
